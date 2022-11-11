@@ -3,8 +3,9 @@ import time
 from parsel import Selector
 import re
 
-# Requisito 1
+
 # https://stackoverflow.com/questions/26825729/extract-number-from-string-in-python
+# Requisito 1
 def fetch(url: str):
     time.sleep(1)
     header = {"user-agent": "Fake user-agent"}
