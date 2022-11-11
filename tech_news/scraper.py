@@ -1,9 +1,10 @@
 import requests
 import time
 from parsel import Selector
-
+import re
 
 # Requisito 1
+# https://stackoverflow.com/questions/26825729/extract-number-from-string-in-python
 def fetch(url: str):
     time.sleep(1)
     header = {"user-agent": "Fake user-agent"}
@@ -48,7 +49,44 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+
+    comments_count = selector.css(
+        "div.post-comments h5.title-block ::text"
+    ).get()
+    if comments_count is None:
+        comments_count = 0
+    else:
+        comments_count = int(re.search(r"\d+", comments_count).group())
+
+    url = selector.css('link[rel="canonical"]::attr(href)').get()
+    title = selector.css("div.entry-header-inner h1.entry-title ::text").get()
+    timestamp = selector.css("ul.post-meta > li.meta-date ::text").get()
+    writer = selector.css("span.author a.url ::text").get()
+
+    summarys = selector.css(
+        "div.entry-content > p:nth-of-type(1) *::text"
+    ).getall()
+
+    tags = selector.css(
+        "section.post-tags ul li:not(:first-child) ::text"
+    ).getall()
+
+    category = selector.css(
+        "div.meta-category a.category-style span.label ::text"
+    ).get()
+
+    news = {
+        "url": url,
+        "title": title.strip(),
+        "timestamp": timestamp,
+        "writer": writer,
+        "comments_count": comments_count,
+        "summary": "".join(summarys).strip(),
+        "tags": tags,
+        "category": category,
+    }
+    return news
 
 
 # Requisito 5
