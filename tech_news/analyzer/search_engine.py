@@ -52,4 +52,10 @@ def search_by_tag(tag):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    result = []
+    search = search_news({"category": f"{category.casefold().capitalize()}"})
+
+    for news in search:
+        result.append((news["title"], news["url"]))
+
+    return result
