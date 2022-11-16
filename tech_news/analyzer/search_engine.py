@@ -41,7 +41,13 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_tag(tag):
-    """Seu código deve vir aqui"""
+    result = []
+    search = search_news({"tags": f"{tag.casefold().capitalize()}"})
+
+    for news in search:
+        result.append((news["title"], news["url"]))
+
+    return result
 
 
 # Requisito 9
